@@ -71,8 +71,9 @@ const getColor = (leaving, coming) => {
 
 const getKuntaValue = (kuntaID) => {
   var returnArray = [];
-  var value1 = leavingArray.dataset.dimension.Lähtöalue.category.index[kuntaID];
-  console.log(value1);
+  var value1 =
+    leavingArray.dataset.dimension["Lähtöalue"].category.index[kuntaID];
+  //console.log(value1);
   if (leavingArray.dataset.value[value1]) {
     var color = getColor(
       leavingArray.dataset.value[value1],
@@ -117,6 +118,7 @@ async function startFunction() {
       comingArray = data[1];
     })
     .then((data) => {
+      //console.log(leavingArray)
       testFileFunction();
     })
     .catch((err) => {
