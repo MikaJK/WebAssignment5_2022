@@ -1,7 +1,8 @@
 import "./styles.css";
 const L = window.L;
 let dataArray = [];
-const tArray = [];
+var leavingArray = [];
+var comingArray = [];
 
 if (document.readyState !== "loading") {
   console.log("Document is ready!");
@@ -68,18 +69,31 @@ const getColor = (leaving, coming) => {
   return "hsl(" + x + ", 75%, 50%)";
 };
 
-function testFileFunction(data1, data2) {
-  //console.log(data1);
-  var i=0;
-
-  for (let i = 0; i < data1.length; i++) {
-    var color = getColor(data1[i], data2[i]);
-    dataArray.push([data1[i], data2[i], color]);
+const getKuntaValue = (kuntaID) => {
+  var returnArray = [];
+  var value1 = leavingArray.dataset.dimension.Lähtöalue.category.index[kuntaID];
+  if (leavingArray.dataset.value[value1]) {
+    var color = getColor(
+      leavingArray.dataset.value[value1],
+      comingArray.dataset.value[value1]
+    );
+    return [
+      leavingArray.dataset.value[value1],
+      comingArray.dataset.value[value1],
+      color
+    ];
   }
+  return returnArray;
+};
+
+/*data[0].dataset.value,
+        data[1].dataset.value,
+        data[0].dataset.dimension.Lähtöalue.category.index */
+
+function testFileFunction() {
   let url =
     "https://geo.stat.fi/geoserver/wfs?service=WFS&version=2.0.0&request=GetFeature&typeName=tilastointialueet:kunta4500k&outputFormat=json&srsName=EPSG:4326";
   fetchData(url).then((res) => {
-    //console.log(JSON.stringify(res));
     showMapD(res);
   });
 }
@@ -94,7 +108,9 @@ async function startFunction() {
       Promise.all(responses.map((response) => response.json()))
     )
     .then((data) => {
-      testFileFunction(data[0].dataset.value, data[1].dataset.value);
+      leavingArray = data[0];
+      comingArray = data[1];
+      testFileFunction();
     })
     .catch((err) => console.log(err));
 }
@@ -103,14 +119,12 @@ const getFeature = (feature, layer) => {
   if (!feature.id) return;
   const nimi = feature.properties.nimi;
 
-  let id = feature.id;
-  let index = parseInt(id.split(".")[1]);
-  //console.log(index);
+  let data = getKuntaValue("KU" + feature.properties.kunta);
   layer.bindPopup(
     `<ul>
             <li>Name:${nimi}</li>
-            <li>losing:${dataArray[index][0]} </li>
-            <li>gaining:${dataArray[index][1]}</li>
+            <li>losing:${data[0]} </li>
+            <li>gaining:${data[1]}</li>
         </ul>`
   );
   //${lutBuildings[id - 1].name - how to data in string
@@ -118,10 +132,9 @@ const getFeature = (feature, layer) => {
 };
 const getStyle = (feature) => {
   let id = feature.id;
-  let index = parseInt(id.split(".")[1]);
-  console.log(dataArray[index][2]);
+  //console.log(dataArray[index][2]);
   return {
-    color: dataArray[index][2]
+    color: getKuntaValue("KU" + feature.properties.kunta)[2]
   };
 };
 /*var bb = new Blob([JSON.stringify(data)], { type: "text/json" });
