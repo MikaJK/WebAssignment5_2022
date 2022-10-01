@@ -93,7 +93,7 @@ async function startFunction() {
       Promise.all(responses.map((response) => response.json()))
     )
     .then((data) => {
-      testFileFunction(data[0].dataset.value, data[1].dataset.value);
+      testFileFunction(data[0].dataset.value, data[1].dataset.value,data[0].dataset.dimension.Lähtöalue.category.index);
     })
     .catch((err) => console.log(err));
 }
