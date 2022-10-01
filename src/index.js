@@ -68,7 +68,7 @@ const getColor = (leaving, coming) => {
   return "hsl(" + x + ", 75%, 50%)";
 };
 
-function testFileFunction(data1, data2) {
+function testFileFunction(data1, data2,kunnatInOrder) {
   //console.log(data1);
   for (const key in kunnatInOrder) {
     var i = kunnatInOrder[key];
