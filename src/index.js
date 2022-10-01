@@ -68,12 +68,26 @@ const getColor = (leaving, coming) => {
   return "hsl(" + x + ", 75%, 50%)";
 };
 
-function testFileFunction(data1, data2) {
-  //console.log(data1);
+const getKuntaValues = (kuntaID) => {
+  var returnArray = [];
+  for (var i = 0; i < dataArray.length; i++) {
+    if (dataArray[i][3] === kuntaID) {
+      return (returnArray = [
+        dataArray[i][0],
+        dataArray[i][1],
+        dataArray[i][2]
+      ]);
+    }
+  }
+  return returnArray;
+};
 
-  for (let i = 0; i < data1.length; i++) {
+function testFileFunction(data1, data2, kunnatInOrder) {
+  for (const key in kunnatInOrder) {
+    var i = kunnatInOrder[key];
+    //console.log(`${key}: ${kunnatInOrder[key]}`);
     var color = getColor(data1[i], data2[i]);
-    dataArray.push([data1[i], data2[i], color]);
+    dataArray.push([data1[i], data2[i], color, key]);
   }
   let url =
     "https://geo.stat.fi/geoserver/wfs?service=WFS&version=2.0.0&request=GetFeature&typeName=tilastointialueet:kunta4500k&outputFormat=json&srsName=EPSG:4326";
@@ -93,7 +107,13 @@ async function startFunction() {
       Promise.all(responses.map((response) => response.json()))
     )
     .then((data) => {
-      testFileFunction(data[0].dataset.value, data[1].dataset.value);
+      console.log(data[0].dataset.dimension.Lähtöalue.category.index);
+
+      testFileFunction(
+        data[0].dataset.value,
+        data[1].dataset.value,
+        data[0].dataset.dimension.Lähtöalue.category.index
+      );
     })
     .catch((err) => console.log(err));
 }
@@ -102,14 +122,12 @@ const getFeature = (feature, layer) => {
   if (!feature.id) return;
   const nimi = feature.properties.nimi;
 
-  let id = feature.id;
-  let index = parseInt(id.split(".")[1]);
-  //console.log(index);
+  let data = getKuntaValues("KU" + feature.properties.kunta);
   layer.bindPopup(
     `<ul>
             <li>Name:${nimi}</li>
-            <li>losing:${dataArray[index][0]} </li>
-            <li>gaining:${dataArray[index][1]}</li>
+            <li>losing:${data[0]} </li>
+            <li>gaining:${data[1]}</li>
         </ul>`
   );
   //${lutBuildings[id - 1].name - how to data in string
@@ -117,10 +135,9 @@ const getFeature = (feature, layer) => {
 };
 const getStyle = (feature) => {
   let id = feature.id;
-  let index = parseInt(id.split(".")[1]);
-  console.log(dataArray[index][2]);
+  //console.log(dataArray[index][2]);
   return {
-    color: dataArray[index][2]
+    color: getKuntaValues("KU" + feature.properties.kunta)[2]
   };
 };
 /*var bb = new Blob([JSON.stringify(data)], { type: "text/json" });
