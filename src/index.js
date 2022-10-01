@@ -68,24 +68,10 @@ const getColor = (leaving, coming) => {
   return "hsl(" + x + ", 75%, 50%)";
 };
 
-const getKuntaValues = (kuntaID) => {
-  var returnArray = [];
-  for (var i = 0; i < dataArray.length; i++) {
-    if (dataArray[i][3] === kuntaID) {
-      return (returnArray = [
-        dataArray[i][0],
-        dataArray[i][1],
-        dataArray[i][2]
-      ]);
-    }
-  }
-  return returnArray;
-};
-
-function testFileFunction(data1, data2, kunnatInOrder) {
+function testFileFunction(data1, data2) {
+  //console.log(data1);
   for (const key in kunnatInOrder) {
     var i = kunnatInOrder[key];
-    //console.log(`${key}: ${kunnatInOrder[key]}`);
     var color = getColor(data1[i], data2[i]);
     dataArray.push([data1[i], data2[i], color, key]);
   }
@@ -107,13 +93,7 @@ async function startFunction() {
       Promise.all(responses.map((response) => response.json()))
     )
     .then((data) => {
-      //console.log(data[0].dataset.dimension.Lähtöalue.category.index);
-
-      testFileFunction(
-        data[0].dataset.value,
-        data[1].dataset.value,
-        data[0].dataset.dimension.Lähtöalue.category.index
-      );
+      testFileFunction(data[0].dataset.value, data[1].dataset.value);
     })
     .catch((err) => console.log(err));
 }
@@ -122,12 +102,14 @@ const getFeature = (feature, layer) => {
   if (!feature.id) return;
   const nimi = feature.properties.nimi;
 
-  let data = getKuntaValues("KU" + feature.properties.kunta);
+  let id = feature.id;
+  let index = parseInt(id.split(".")[1]);
+  //console.log(index);
   layer.bindPopup(
     `<ul>
             <li>Name:${nimi}</li>
-            <li>losing:${data[0]} </li>
-            <li>gaining:${data[1]}</li>
+            <li>losing:${dataArray[index][0]} </li>
+            <li>gaining:${dataArray[index][1]}</li>
         </ul>`
   );
   //${lutBuildings[id - 1].name - how to data in string
@@ -135,9 +117,10 @@ const getFeature = (feature, layer) => {
 };
 const getStyle = (feature) => {
   let id = feature.id;
-  //console.log(dataArray[index][2]);
+  let index = parseInt(id.split(".")[1]);
+  console.log(dataArray[index][2]);
   return {
-    color: getKuntaValues("KU" + feature.properties.kunta)[2]
+    color: dataArray[index][2]
   };
 };
 /*var bb = new Blob([JSON.stringify(data)], { type: "text/json" });
