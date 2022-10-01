@@ -71,7 +71,7 @@ const getColor = (leaving, coming) => {
 const getKuntaValue = (kuntaID) => {
   var returnArray = [];
   var value1 =
-    leavingArray.dataset.dimension["Lähtöalue"].category.index[kuntaID];
+    leavingArray.dataset.dimension.Lähtöalue".category.index[kuntaID];
   //console.log(value1);
   if (leavingArray.dataset.value[value1]) {
     var color = getColor(
