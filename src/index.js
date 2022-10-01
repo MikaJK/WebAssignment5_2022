@@ -71,9 +71,10 @@ const getColor = (leaving, coming) => {
 function testFileFunction(data1, data2) {
   //console.log(data1);
   var i=0;
-for (const key in data) {
+
+  for (let i = 0; i < data1.length; i++) {
     var color = getColor(data1[i], data2[i]);
-    dataArray.push([data1[i], data2[i], color, key]);i++
+    dataArray.push([data1[i], data2[i], color]);
   }
   let url =
     "https://geo.stat.fi/geoserver/wfs?service=WFS&version=2.0.0&request=GetFeature&typeName=tilastointialueet:kunta4500k&outputFormat=json&srsName=EPSG:4326";
