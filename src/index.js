@@ -31,10 +31,6 @@ async function fetchData(url) {
 }
 
 async function showMapD(data) {
-  /*let map = L.map("map", {
-    minZoom: -3
-  });*/
-
   let map = L.map("map");
   let geoJson = L.geoJson(data, {
     onEachFeature: getFeature,
@@ -70,8 +66,7 @@ const getColor = (leaving, coming) => {
 
 const getKuntaValue = (kuntaID) => {
   var returnArray = [];
-  var value1 =
-    leavingArray.dataset.dimension.Lähtöalue.category.index[kuntaID];
+  var value1 = comingArray.dataset.dimension.Tuloalue.category.index[kuntaID];
   //console.log(value1);
   if (leavingArray.dataset.value[value1]) {
     var color = getColor(
