@@ -68,12 +68,12 @@ const getColor = (leaving, coming) => {
   return "hsl(" + x + ", 75%, 50%)";
 };
 
-function testFileFunction(data1, data2,kunnatInOrder) {
+function testFileFunction(data1, data2) {
   //console.log(data1);
-  for (const key in kunnatInOrder) {
-    var i = kunnatInOrder[key];
+  var i=0;
+for (const key in data) {
     var color = getColor(data1[i], data2[i]);
-    dataArray.push([data1[i], data2[i], color, key]);
+    dataArray.push([data1[i], data2[i], color, key]);i++
   }
   let url =
     "https://geo.stat.fi/geoserver/wfs?service=WFS&version=2.0.0&request=GetFeature&typeName=tilastointialueet:kunta4500k&outputFormat=json&srsName=EPSG:4326";
@@ -93,7 +93,7 @@ async function startFunction() {
       Promise.all(responses.map((response) => response.json()))
     )
     .then((data) => {
-      testFileFunction(data[0].dataset.value, data[1].dataset.value,data[0].dataset.dimension.Lähtöalue.category.index);
+      testFileFunction(data[0].dataset.value, data[1].dataset.value);
     })
     .catch((err) => console.log(err));
 }
