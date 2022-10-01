@@ -1,8 +1,8 @@
 import "./styles.css";
 const L = window.L;
 let dataArray = [];
-var leavingArray = [];
-var comingArray = [];
+let leavingArray = [];
+let comingArray = [];
 
 if (document.readyState !== "loading") {
   console.log("Document is ready!");
